@@ -6,4 +6,4 @@
 
 ## Running 
 
-![img](caps running.png)
+![img](capsrunning.png)
