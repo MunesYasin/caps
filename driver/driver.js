@@ -1,21 +1,23 @@
 'use strict';
 
-require('dotenv').config();
-
-
 const io = require('socket.io-client');
-const socket = io.connect(`http://localhost:3001/caps`) 
+const host = 'http://localhost:3000';
+const conCaps = io.connect(`${host}/caps`);
 
-socket.on('pickup',(payload)=>{ 
-    setTimeout(() => {doPickup(payload);},1500)
-    setTimeout(() => {doDelivery(payload)},3000)
-})
-function doPickup(payload){
-    console.log(`picking Up ${payload.orderId}`)
-    socket.emit('in-transit',payload); 
-}
-function doDelivery(payload){
-    console.log(`Delivering up ${payload.orderId}`)
-    socket.emit('delivered',payload) 
-}
-module.exports = { doPickup, doDelivery};
+conCaps.emit('getAll');
+
+conCaps.on('pickup', payload => {
+
+conCaps.emit('received', payload.orderId);
+    console.log(`DRIVER: will get the order :${payload.orderID}`);
+
+    setTimeout(() => {
+        console.log(`DRIVER: picked up ${payload.orderID}`);
+        conCaps.emit('in-transit', payload);
+    }, 2000);
+
+    setTimeout(() => {
+        console.log(`DRIVER: delivered up ${payload.orderID}`);
+        conCaps.emit('delivered', payload);
+    }, 3000);
+});
